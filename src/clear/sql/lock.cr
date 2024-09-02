@@ -22,8 +22,8 @@ module Clear
     #
     def self.lock(table : String | Symbol, mode = "ACCESS EXCLUSIVE", connection = "default", &block)
       Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
-        transaction do
-          execute("LOCK TABLE #{table} IN #{mode} MODE")
+        transaction(connection) do
+          cnx.exec_all("LOCK TABLE #{table} IN #{mode} MODE")
           return yield(cnx)
         end
       end
