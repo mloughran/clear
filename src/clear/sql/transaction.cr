@@ -51,13 +51,13 @@ module Clear::SQL::Transaction
         return yield(cnx) # In case we already are in transaction, we just ignore
       else
         cnx._clear_in_transaction = true
-        execute(level.to_begin_operation)
+        cnx.exec_all(level.to_begin_operation)
         begin
           return yield(cnx)
         rescue e
           has_rollback = true
           is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
-          execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
+          cnx.exec_all("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
           raise e unless is_rollback_error
         ensure
           cnx._clear_in_transaction = false
@@ -65,7 +65,7 @@ module Clear::SQL::Transaction
           callbacks = @@commit_callbacks.delete(cnx)
 
           unless has_rollback
-            execute("COMMIT")
+            cnx.exec_all("COMMIT")
 
             # Remove the list from the global hash, and execute after the commits
             # this should prevent the proc to be called twice in case of usage
@@ -116,14 +116,14 @@ module Clear::SQL::Transaction
   # end
   # ```
   def with_savepoint(sp_name : Symbolic? = nil, connection_name : String = "default", &block)
-    transaction do |cnx|
+    transaction(connection_name) do |cnx|
       sp_name ||= "sp_#{@@savepoint_uid += 1}"
-      execute(connection_name, "SAVEPOINT #{sp_name}")
+      cnx.exec_all("SAVEPOINT #{sp_name}")
       yield
-      execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
+      cnx.exec_all("RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
     rescue e : RollbackError
       if cnx._clear_in_transaction?
-        execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}")
+        cnx.exec_all("ROLLBACK TO SAVEPOINT #{sp_name}")
         raise e if e.savepoint_id.try &.!=(sp_name)
       end
     end

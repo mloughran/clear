@@ -115,7 +115,7 @@ module Clear::Model::HasSaving
             }
 
             if has_trigger?(:commit, :before) || has_trigger?(:commit, :after)
-              Clear::SQL.transaction do
+              Clear::SQL.transaction(@@connection) do
                 Clear::SQL.after_commit {
                   trigger_before_events(:commit)
                   trigger_after_events(:commit)

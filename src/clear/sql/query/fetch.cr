@@ -24,7 +24,7 @@ module Clear::SQL::Query::Fetch
   def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Nil)
     trigger_before_query
 
-    Clear::SQL.transaction do |cnx|
+    Clear::SQL.transaction(connection_name) do |cnx|
       cursor_name = "__cursor_#{Time.local.to_unix ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
