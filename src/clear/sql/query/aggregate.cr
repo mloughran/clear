@@ -17,7 +17,7 @@ module Clear::SQL::Query::Aggregate
       # ... except if the subquery has distinct, otherwise will always returns "1"...
       subquery = self.is_distinct? ? self : self.dup.clear_order_bys.clear_select.use_connection(self.connection_name).select("1")
 
-      o = X.new(Clear::SQL.select("COUNT(*)").from({query_count: subquery}).scalar(Int64))
+      o = X.new(Clear::SQL.select("COUNT(*)").use_connection(self.connection_name).from({query_count: subquery}).scalar(Int64))
     else
       new_query = self.dup.clear_select.select("COUNT(*)")
       o = X.new(new_query.scalar(Int64))
