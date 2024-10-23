@@ -179,19 +179,4 @@ module Clear::Migration
   end
 end
 
-# :nodoc:
-# This class is here to prevent bug #5705
-# and will be removed when the bug is fixed
-class DummyMigration
-  include Clear::Migration
-
-  def uid : Int64
-    -0x01_i64
-  end
-
-  def change(dir)
-    # Nothing
-  end
-end
-
 require "./operation"

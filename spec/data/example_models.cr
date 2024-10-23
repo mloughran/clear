@@ -39,7 +39,7 @@ class ModelWithinAnotherSchema
 
   primary_key
 
-  column title : String?
+  column title : String | Nil
 end
 
 class Category
@@ -51,7 +51,7 @@ class Category
   column name : String
 
   has_many categories : Category
-	belongs_to category : Category?
+  belongs_to category : Category | Nil
 
   has_many posts : Post
   has_many users : User, through: :posts
@@ -84,7 +84,7 @@ class Post
   has_many tag_relations : Tag, through: :post_tags, relation: :tag
 
   belongs_to user : User, foreign_key_type: Int32
-  belongs_to category : Category?, foreign_key_type: Int64
+  belongs_to category : Category | Nil, foreign_key_type: Int64
 end
 
 class UserInfo
@@ -93,7 +93,7 @@ class UserInfo
 
   column id : Int32, primary: true, presence: false
 
-  belongs_to user : User, foreign_key_type: Int32?
+  belongs_to user : User, foreign_key_type: Int32 | Nil
   column registration_number : Int64
 end
 
@@ -105,15 +105,15 @@ class User
   column id : Int32, primary: true, presence: false
 
   column first_name : String
-  column last_name : String?
-  column middle_name : String?, mass_assign: false
+  column last_name : String | Nil
+  column middle_name : String | Nil, mass_assign: false
 
-  column active : Bool?
+  column active : Bool | Nil
 
   column notification_preferences : JSON::Any, presence: false
 
   has_many posts : Post, foreign_key: "user_id"
-  has_one info : UserInfo?, foreign_key: "user_id"
+  has_one info : UserInfo | Nil, foreign_key: "user_id"
 
   has_many categories : Category, through: :posts
 
@@ -141,10 +141,10 @@ class BigDecimalData
   include Clear::Model
 
   column id : Int32, primary: true, presence: false
-  column num1 : BigDecimal?
-  column num2 : BigDecimal?
-  column num3 : BigDecimal?
-  column num4 : BigDecimal?
+  column num1 : BigDecimal | Nil
+  column num2 : BigDecimal | Nil
+  column num3 : BigDecimal | Nil
+  column num4 : BigDecimal | Nil
 end
 
 class ExampleModelMigration1

@@ -34,7 +34,7 @@ module RelationSpec
     primary_key
 
     column infos : String
-    belongs_to user : User?, foreign_key: "user_id"
+    belongs_to user : User | Nil, foreign_key: "user_id"
   end
 
   class User
@@ -45,7 +45,7 @@ module RelationSpec
     has_one user_info : UserInfo, foreign_key: "user_id"
     # Same...
     has_many user_infos : UserInfo, foreign_key: "user_id"
-    has_one user_info_nilable : UserInfo?, foreign_key: "user_id"
+    has_one user_info_nilable : UserInfo | Nil, foreign_key: "user_id"
 
     has_many posts : Post, foreign_key: "user_id"
 

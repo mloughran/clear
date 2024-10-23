@@ -6,9 +6,9 @@ end
 
 # Reopen Table to add the helpers
 class Clear::Migration::Table < Clear::Migration::Operation
-  include Clear::Migration::FullTextSearchableTableHelpers
+  include FullTextSearchableTableHelpers
 end
 
 module Clear::Migration::Helper
-  include Clear::Migration::FullTextSearchableHelpers
+  include FullTextSearchableHelpers
 end
