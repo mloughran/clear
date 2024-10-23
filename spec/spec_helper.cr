@@ -12,15 +12,15 @@ class ::Crypto::Bcrypt::Password
 end
 
 def initdb
-  system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres 1>/dev/null")
+  system("dropdb clear_spec")
+  system("createdb clear_spec")
 
-  system("echo \"DROP DATABASE IF EXISTS clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql -U postgres clear_secondary_spec 1>/dev/null")
+  system("dropdb clear_secondary_spec")
+  system("createdb clear_secondary_spec")
+  system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql clear_secondary_spec 1>/dev/null")
 
-  Clear::SQL.init("postgres://postgres@localhost/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
-  Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("postgres://localhost/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("secondary", "postgres://localhost/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
 end
 
 Spec.before_suite do
