@@ -99,7 +99,7 @@ module Clear::SQL::SelectBuilder
 
     raise QueryBuildingError.new("Cannot delete from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
 
-    DeleteQuery.new(v.dup, @wheres.dup)
+    DeleteQuery.new(v.dup, @wheres.dup).use_connection(self.connection_name)
   end
 
   # Construct and return an `update` query from this select query
@@ -113,6 +113,6 @@ module Clear::SQL::SelectBuilder
 
     raise QueryBuildingError.new("Cannot update from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
 
-    UpdateQuery.new(table: v.dup, wheres: @wheres.dup)
+    UpdateQuery.new(table: v.dup, wheres: @wheres.dup).use_connection(self.connection_name)
   end
 end
